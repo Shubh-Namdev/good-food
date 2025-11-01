@@ -36,7 +36,7 @@ public class RestaurantEventConsumer {
             case "ORDER_ACCEPTED" -> order.setStatus(OrderStatus.ACCEPTED);
             case "ORDER_REJECTED" -> order.setStatus(OrderStatus.REJECTED);
             case "ORDER_PREPARING" -> order.setStatus(OrderStatus.PREPARING);
-            case "ORDER_READY" -> order.setStatus(OrderStatus.OUT_FOR_DELIVERY);
+            case "ORDER_READY" -> order.setStatus(OrderStatus.ASSIGNED);
             case "ORDER_COMPLETED" -> order.setStatus(OrderStatus.COMPLETED);
             default -> System.out.println("ℹ️ Ignoring unknown event type: " + eventType);
         }
