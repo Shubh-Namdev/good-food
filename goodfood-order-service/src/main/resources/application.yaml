@@ -1,0 +1,35 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: goodfood-order-service
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/goodfood_orderdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  config:
+    import: configserver:http://localhost:8888
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks
+          
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    producer.value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
