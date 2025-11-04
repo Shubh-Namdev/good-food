@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  config-server:
+    build: ./goodfood-config-server
+    container_name: goodfood-config-server
+    # ports:
+    #   - "8888:8888"
+    networks:
+      - goodfood-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+    # ports:
+    #   - "3306:3306"
+    networks:
+      - goodfood-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    # ports:
+    #   - "2181:2181"
+    networks:
+      - goodfood-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    # ports:
+    #   - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - goodfood-net
+
+  auth-server:
+    build: ./goodfood-auth-server
+    container_name: goodfood-auth-server
+    # ports:
+    #   - "9000:9000"
+    depends_on:
+      - mysql
+      - config-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - goodfood-net
+
+  gateway:
+    build: ./goodfood-gateway
+    container_name: goodfood-gateway
+    ports:
+      - "8090:8090"
+    depends_on:
+      - auth-server
+      - config-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - goodfood-net
+
+  order-service:
+    build: ./goodfood-order-service
+    container_name: goodfood-order-service
+    # ports:
+    #   - "8082:8082"
+    depends_on:
+      - mysql
+      - kafka
+      - config-server
+      - auth-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - goodfood-net
+
+  restaurant-service:
+    build: ./goodfood-restaurant-service
+    container_name: goodfood-restaurant-service
+    # ports:
+    #   - "8084:8084"
+    depends_on:
+      - mysql
+      - kafka
+      - config-server
+      - auth-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - goodfood-net
+
+  delivery-service:
+    build: ./goodfood-delivery-service
+    container_name: goodfood-delivery-service
+    # ports:
+    #   - "8085:8085"
+    depends_on:
+      - mysql
+      - kafka
+      - config-server
+      - auth-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - goodfood-net
+
+networks:
+  goodfood-net:
+    driver: bridge
