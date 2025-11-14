@@ -1,0 +1,15 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: goodfood-auth-server
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false

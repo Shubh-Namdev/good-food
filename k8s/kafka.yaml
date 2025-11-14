@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka
-  # namespace: goodfood
+  namespace: goodfood
 spec:
   replicas: 1
   selector:
@@ -34,23 +34,13 @@ spec:
               value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
             - name: KAFKA_CONTROLLER_QUORUM_VOTERS
               value: "1@kafka:9093"
-      #       - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-      #         value: "1"
-      #       - name: KAFKA_CFG_LOG_DIRS
-      #         value: "/bitnami/kafka/data"
-      #     volumeMounts:
-      #       - name: kafka-data
-      #         mountPath: /bitnami/kafka/data
-      # volumes:
-      #   - name: kafka-data
-      #     emptyDir: {}
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kafka
-  # namespace: goodfood
+  namespace: goodfood
 spec:
   selector:
     app: kafka
