@@ -1,12 +1,16 @@
 spring:
   datasource:
     url: jdbc:mysql://mysql:3306/goodfood_orderdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: ${DB_PASSWORD}
 
   kafka:
     bootstrap-servers: kafka:9092
     producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
     producer.value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-security:
-  auth:
-    jwks: http://auth-server:9000/oauth2/jwks
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://auth-server:9000/oauth2/jwks
