@@ -9,3 +9,6 @@ spring:
     
   kafka:
     bootstrap-servers: kafka:9092
+
+  zipkin:
+    base-url: http://zipkin:9411

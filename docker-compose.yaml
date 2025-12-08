@@ -6,6 +6,13 @@ services:
     container_name: goodfood-config-server
     # ports:
     #   - "8888:8888"
+    expose:
+      - "8888"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10 
     networks:
       - goodfood-net
 
@@ -13,9 +20,29 @@ services:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: 
     # ports:
     #   - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - goodfood-net
+
+  mysql-exporter:
+    image: prom/mysqld-exporter
+    container_name: mysql-exporter
+    command:
+      - '--mysqld.address=mysql:3306'
+      - '--config.my-cnf=/.my.cnf'
+    volumes:
+      - ./monitoring/.my.cnf:/.my.cnf
+    expose:
+      - "9104"
+    depends_on:
+      - mysql
     networks:
       - goodfood-net
 
@@ -50,11 +77,17 @@ services:
     container_name: goodfood-auth-server
     # ports:
     #   - "9000:9000"
+    expose:
+      - "9000"
     depends_on:
-      - mysql
-      - config-server
+      config-server:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      DB_PASSWORD: 
     networks:
       - goodfood-net
 
@@ -63,11 +96,22 @@ services:
     container_name: goodfood-gateway
     ports:
       - "8090:8090"
+    expose:
+      - "8090"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8090/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10 
     depends_on:
-      - auth-server
-      - config-server
+      auth-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      DB_PASSWORD: 
     networks:
       - goodfood-net
 
@@ -76,6 +120,8 @@ services:
     container_name: goodfood-order-service
     # ports:
     #   - "8082:8082"
+    expose:
+      - "8082"
     depends_on:
       - mysql
       - kafka
@@ -83,6 +129,8 @@ services:
       - auth-server
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      DB_PASSWORD: 
     networks:
       - goodfood-net
 
@@ -91,6 +139,8 @@ services:
     container_name: goodfood-restaurant-service
     # ports:
     #   - "8084:8084"
+    expose:
+      - "8084"
     depends_on:
       - mysql
       - kafka
@@ -98,6 +148,8 @@ services:
       - auth-server
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      DB_PASSWORD: 
     networks:
       - goodfood-net
 
@@ -106,6 +158,8 @@ services:
     container_name: goodfood-delivery-service
     # ports:
     #   - "8085:8085"
+    expose:
+      - "8085"
     depends_on:
       - mysql
       - kafka
@@ -113,6 +167,31 @@ services:
       - auth-server
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      DB_PASSWORD: 
+    networks:
+      - goodfood-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - auth-server
+      - gateway
+    networks:
+      - goodfood-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
     networks:
       - goodfood-net
 

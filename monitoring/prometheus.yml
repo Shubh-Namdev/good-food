@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+      
+  - job_name: 'goodfood-auth-server'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['auth-server:9000']
+
+  - job_name: 'goodfood-gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['gateway:8090']
+
+  - job_name: 'goodfood-order-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['order-service:8082']
+
+  - job_name: 'goodfood-restaurant-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['restaurant-service:8084']
+
+  - job_name: 'goodfood-delivery-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['delivery-service:8085']
