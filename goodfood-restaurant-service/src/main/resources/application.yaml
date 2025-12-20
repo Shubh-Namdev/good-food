@@ -3,5 +3,5 @@ spring:
     name: goodfood-restaurant-service
 
   config:
-    import: "optional:configserver:http://config-server:8888"
+    import: "optional:configserver:http://localhost:8888"
 

@@ -6,8 +6,15 @@ plugins {
 
 group = 'com.goodfood'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '21'
+// sourceCompatibility = '21'
 description = 'Centralized Authorization Server'
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
