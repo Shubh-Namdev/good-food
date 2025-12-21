@@ -33,11 +33,11 @@ public class OrderEventListener {
 
     @KafkaListener(topics = "order-events", groupId = "restaurant-service-group-order")
     public void handleOrderEvent(OrderCreatedEvent orderEvent) {
-        System.out.println("📥 Received order event in Restaurant Service: " + orderEvent.toString());
+        System.out.println("📥 Received order event in Restaurant Service: " + orderEvent);
 
-        String eventType = (String) orderEvent.getEventType();
-        Long orderId = Long.valueOf(orderEvent.getOrderId());
-        String restaurantId = (String) orderEvent.getRestaurantId();
+        String eventType = orderEvent.getEventType();
+        Long orderId = orderEvent.getOrderId();
+        String restaurantId = orderEvent.getRestaurantId();
 
         switch (eventType) {
             case "ORDER_CREATED":

@@ -1,9 +1,9 @@
 server:
-  port: 8085
+  port: 8086
 
 spring:
   application:
-    name: goodfood-delivery-service
+    name: goodfood-payment-service
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,7 +25,7 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-      service-type: delivery
+      service-type: payment
   # tracing:
   #   sampling:
   #     probability: 1.0
