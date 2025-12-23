@@ -11,12 +11,12 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class RestaurantEventConsumer {
+public class RestaurantEventListener {
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryEventProducer eventProducer;
 
-    @KafkaListener(topics = "restaurant-events", groupId = "delivery-service-group-restaurant")
+    @KafkaListener(topics = "restaurant-events", groupId = "restaurant-service-group")
     public void handleRestaurantEvent(Map<String, Object> event) {
         System.out.println("📥 Received restaurant event: " + event);
 

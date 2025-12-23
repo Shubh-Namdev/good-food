@@ -13,11 +13,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RestaurantEventConsumer {
+public class RestaurantEventListener {
 
     private final OrderRepository orderRepository;
 
-    @KafkaListener(topics = "restaurant-events", groupId = "order-service-group-restaurant")
+    @KafkaListener(topics = "restaurant-events", 
+                    groupId = "restaurant-service-group",
+                    containerFactory = "restaurantKafkaListenerContainerFactory"
+                )
     public void consumeRestaurantEvent(Map<String, Object> event) {
         System.out.println("📥 Received restaurant event: " + event);
 
@@ -33,11 +36,11 @@ public class RestaurantEventConsumer {
         Order order = optionalOrder.get();
 
         switch (eventType) {
-            case "ORDER_ACCEPTED" -> order.setStatus(OrderStatus.ACCEPTED);
-            case "ORDER_REJECTED" -> order.setStatus(OrderStatus.REJECTED);
-            case "ORDER_PREPARING" -> order.setStatus(OrderStatus.PREPARING);
-            case "ORDER_READY" -> order.setStatus(OrderStatus.ASSIGNED);
-            case "ORDER_COMPLETED" -> order.setStatus(OrderStatus.COMPLETED);
+            case "ORDER_ACCEPTED" -> order.setStatus(OrderStatus.ORDER_ACCEPTED);
+            case "ORDER_REJECTED" -> order.setStatus(OrderStatus.ORDER_REJECTED);
+            case "ORDER_PREPARING" -> order.setStatus(OrderStatus.ORDER_PREPARING);
+            case "ORDER_READY" -> order.setStatus(OrderStatus.ORDER_ASSIGNED);
+            case "ORDER_COMPLETED" -> order.setStatus(OrderStatus.ORDER_COMPLETED);
             default -> System.out.println("ℹ️ Ignoring unknown event type: " + eventType);
         }
 

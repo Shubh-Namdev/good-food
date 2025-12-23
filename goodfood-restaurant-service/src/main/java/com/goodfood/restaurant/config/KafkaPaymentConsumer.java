@@ -1,7 +1,8 @@
-package com.goodfood.order.config;
+package com.goodfood.restaurant.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,34 +12,41 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import com.goodfood.restaurant.events.PaymentEvent;
+
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaRestaurantConsumerConfig {
+public class KafkaPaymentConsumer {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
-        JsonDeserializer<Object> deserializer = new JsonDeserializer<>(Object.class);
-        deserializer.addTrustedPackages("*"); // trust all packages
-
+    public ConsumerFactory<String, PaymentEvent> paymentConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-service-group-restaurant");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,ErrorHandlingDeserializer.class);
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS,JsonDeserializer.class);
+        
+        JsonDeserializer<PaymentEvent> deserializer = new JsonDeserializer<>(PaymentEvent.class);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeHeaders(false);
+        
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> paymentKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(paymentConsumerFactory());
         return factory;
     }
 }

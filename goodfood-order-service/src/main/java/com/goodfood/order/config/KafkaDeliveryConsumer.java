@@ -16,7 +16,7 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaDeliveryConsumerConfig {
+public class KafkaDeliveryConsumer {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
@@ -28,7 +28,6 @@ public class KafkaDeliveryConsumerConfig {
 
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "order-service-group-delivery");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
