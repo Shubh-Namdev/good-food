@@ -10,7 +10,7 @@ public class PaymentEventListener {
 
     @KafkaListener(
         topics = "payment-events", 
-        groupId = "payment-service-group",
+        groupId = "restaurant-service-group",
         containerFactory = "paymentKafkaListenerContainerFactory"
     )
     public void handleOrderEvent(PaymentEvent paymentEvent) {

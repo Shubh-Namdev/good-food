@@ -19,7 +19,7 @@ public class DeliveryEventListener {
 
     @KafkaListener(
             topics = "delivery-events",
-            groupId = "delivery-service-group",
+            groupId = "order-service-group",
             containerFactory = "deliveryKafkaListenerContainerFactory"
     )
     public void consumeDeliveryEvent(Map<String, Object> event) {

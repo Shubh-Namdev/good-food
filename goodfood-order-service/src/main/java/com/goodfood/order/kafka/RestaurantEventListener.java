@@ -18,7 +18,7 @@ public class RestaurantEventListener {
     private final OrderRepository orderRepository;
 
     @KafkaListener(topics = "restaurant-events", 
-                    groupId = "restaurant-service-group",
+                    groupId = "order-service-group",
                     containerFactory = "restaurantKafkaListenerContainerFactory"
                 )
     public void consumeRestaurantEvent(Map<String, Object> event) {

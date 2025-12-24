@@ -10,7 +10,7 @@ public class OrderEventListener {
 
     @KafkaListener(
         topics = "order-events", 
-        groupId = "order-service-group",
+        groupId = "restaurant-service-group",
         containerFactory = "orderKafkaListenerContainerFactory"
     )
     public void handleOrderEvent(OrderCreatedEvent orderEvent) {
