@@ -133,6 +133,26 @@ services:
       DB_PASSWORD: 
     networks:
       - goodfood-net
+  
+  payment-service:
+    build: ./goodfood-payment-service
+    container_name: goodfood-payment-service
+    # ports:
+    #   - "8086:8086"
+    expose:
+      - "8086"
+    depends_on:
+      - mysql
+      - kafka
+      - config-server
+      - auth-server
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      DB_PASSWORD: 
+    networks:
+      - goodfood-net
+
 
   restaurant-service:
     build: ./goodfood-restaurant-service
