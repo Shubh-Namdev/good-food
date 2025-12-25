@@ -5,8 +5,6 @@ metadata:
   namespace: goodfood
 spec:
   selector: { app: gateway }
-  # ports: [{ name: http, port: 80, targetPort: 8090 }]
-  # type: ClusterIP
   ports:
     - protocol: TCP
       port: 8090

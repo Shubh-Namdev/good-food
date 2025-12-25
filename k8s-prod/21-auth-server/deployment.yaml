@@ -21,7 +21,6 @@ spec:
             - { name: SPRING_CONFIG_IMPORT, valueFrom: { configMapKeyRef: { name: goodfood-config, key: CONFIG_SERVER_URL } } }
             - { name: DB_PASSWORD, valueFrom: { secretKeyRef: { name: goodfood-secrets, key: mysql-root-password } } }
             # - { name: JAVA_TOOL_OPTIONS, value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005"}
-
           readinessProbe:
             httpGet: { path: /actuator/health/readiness, port: 9000 }
             initialDelaySeconds: 15
@@ -31,7 +30,4 @@ spec:
           resources:
             requests: { cpu: "200m", memory: "256Mi" }
             limits:   { cpu: "800m", memory: "1Gi" }
-          # securityContext:
-          #   runAsNonRoot: true
-          #   allowPrivilegeEscalation: false
-          #   readOnlyRootFilesystem: false
+      
