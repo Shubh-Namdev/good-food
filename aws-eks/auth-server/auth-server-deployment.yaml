@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-server
+  namespace: goodfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-server
+  template:
+    metadata:
+      labels:
+        app: auth-server
+    spec:
+      containers:
+        - name: auth-server
+          image: 654129064103.dkr.ecr.ap-south-1.amazonaws.com/goodfood-auth-server:latest
+          ports:
+            - containerPort: 9000
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: aws
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configserver:http://config-server.goodfood.svc.cluster.local:8888"
+            - name: DB_HOST
+              value: 
+            - name: DB_NAME
+              value: authdb
+            - name: DB_USER
+              value: 
+            - name: DB_PASSWORD
+              value: 
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9000
+            initialDelaySeconds: 45
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
