@@ -47,6 +47,9 @@ spring:
 server:
   port: 9000
 
+notification:
+  processing-timeout-minutes: 5
+
 # management:
 #   endpoints:
 #     web:
