@@ -95,10 +95,7 @@ public class NotificationEventListener {
     }
 
 
-    private void processEvent(
-            NotificationEvent event,
-            Acknowledgment acknowledgment
-    ) {
+    private void processEvent(NotificationEvent event, Acknowledgment acknowledgment) {
         try {
 
             log.info("Received notification event: {}", event);
