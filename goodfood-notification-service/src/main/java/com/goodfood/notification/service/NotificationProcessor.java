@@ -28,6 +28,20 @@ public class NotificationProcessor {
     public void process(NotificationEvent event) {
 
         try {
+                // //For testing kafka retry
+                // if (event.getOrderId() == 999) {
+                //         throw new RuntimeException("Testing retry mechanism");
+                // }
+
+                boolean exists = notificationLogRepository
+                        .existsByOrderIdAndEventType(event.getOrderId(), event.getEventType());
+
+                if (exists) {
+                        log.info("Duplicate event detected. Skipping orderId={}, eventType={}",
+                                event.getOrderId(), event.getEventType());
+                        return;
+                }
+                
                 NotificationLog log = NotificationLog.builder()
                 .orderId(event.getOrderId())
                 .eventType(event.getEventType())

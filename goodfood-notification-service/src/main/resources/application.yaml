@@ -3,9 +3,9 @@ spring:
     name: goodfood-notification-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/goodfood_notification
-    username: root
-    password: root
+    url: jdbc:mysql://goodfood.c106ugc8gvds.ap-south-1.rds.amazonaws.com:3306/goodfood_notification?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: admin
+    password: Admin.12345
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -20,23 +20,27 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+
     consumer:
       group-id: notification-service
       auto-offset-reset: earliest
       enable-auto-commit: false
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
+      # key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      # properties:
+      #   spring.json.trusted.packages: "*"
 
-    listener:
-      ack-mode: manual
+    # listener:
+    #   ack-mode: manual
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your-email@gmail.com
-    password: your-app-password
+    username: yoursfutureguide@gmail.com
+    password: jwkumdqjyyyscoqu
     properties:
       mail:
         smtp:
@@ -56,7 +60,7 @@ notification:
 #       exposure:
 #         include: health,info,metrics,prometheus
 
-# logging:
-#   level:
-#     org.springframework.kafka: INFO
-#     com.goodfood: DEBUG
+logging:
+  level:
+    org.springframework.kafka: INFO
+    com.goodfood: DEBUG
