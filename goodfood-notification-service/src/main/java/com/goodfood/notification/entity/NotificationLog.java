@@ -32,8 +32,9 @@ public class NotificationLog {
     @Column(nullable = false)
     private String email;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;  // SUCCESS / FAILED
+    private NotificationStatus status;
 
     @Column(name = "retry_count", nullable = false)
     private Integer retryCount;
