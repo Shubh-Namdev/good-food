@@ -29,7 +29,7 @@ public class NotificationEventListener {
         processEvent(event, acknowledgment);
     }
 
-    @KafkaListener( topics = "order-events-dlt", groupId = "notification-service")
+    @KafkaListener( topics = "order-events-dlt", groupId = "notification-service-dlt")
     public void consumeOrderDlt(NotificationEvent event){
         log.error("Message moved to DLT: {}", event);
     }
@@ -48,7 +48,7 @@ public class NotificationEventListener {
         processEvent(event, acknowledgment);
     }
 
-    @KafkaListener( topics = "payment-events-dlt", groupId = "notification-service" )
+    @KafkaListener( topics = "payment-events-dlt", groupId = "notification-service-dlt" )
     public void consumePaymentDlt(NotificationEvent event){
         log.error("Message moved to DLT: {}", event);
     }
@@ -67,7 +67,7 @@ public class NotificationEventListener {
         processEvent(event, acknowledgment);
     }
     
-    @KafkaListener( topics = "restaurant-events-dlt", groupId = "notification-service" )
+    @KafkaListener( topics = "restaurant-events-dlt", groupId = "notification-service-dlt" )
     public void consumeRestaurantDlt(NotificationEvent event){
         log.error("Message moved to DLT: {}", event);
     }
@@ -86,7 +86,7 @@ public class NotificationEventListener {
         processEvent(event, acknowledgment);
     }
 
-    @KafkaListener( topics = "delivery-events-dlt", groupId = "notification-service" )
+    @KafkaListener( topics = "delivery-events-dlt", groupId = "notification-service-dlt" )
     public void consumeDeliveryDlt(NotificationEvent event){
         log.error("Message moved to DLT: {}", event);
     }
