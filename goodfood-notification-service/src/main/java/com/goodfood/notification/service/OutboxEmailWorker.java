@@ -33,6 +33,13 @@ public class OutboxEmailWorker {
 
         for (OutboxEvent event : events) {
 
+            // try to claim event
+            int claimed = repository.claimEvent(event.getId());
+
+            if (claimed == 0) {
+                continue; // another instance already processing
+            }
+
             try {
 
                 NotificationEvent notification =
