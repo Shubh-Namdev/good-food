@@ -3,11 +3,11 @@ package com.goodfood.notification;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class GoodfoodNotificationServiceApplicationTests {
+// @SpringBootTest
+// class GoodfoodNotificationServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }

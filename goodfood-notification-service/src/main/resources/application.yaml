@@ -3,9 +3,9 @@ spring:
     name: goodfood-notification-service
 
   datasource:
-    url: jdbc:mysql://goodfood.c106ugc8gvds.ap-south-1.rds.amazonaws.com:3306/goodfood_notification?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: admin
-    password: Admin.12345
+    url: jdbc:mysql://${DB_HOST}:3306/goodfood_notification?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -18,7 +18,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${BOOTSTRAP_SERVER_IP}:9092
 
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -31,8 +31,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: yoursfutureguide@gmail.com
-    password: jwkumdqjyyyscoqu
+    username: ${SENDER_EMAIL}
+    password: ${SENDER_PASSWORD}
     properties:
       mail:
         smtp:
