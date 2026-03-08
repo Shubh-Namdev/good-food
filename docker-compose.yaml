@@ -4,8 +4,8 @@ services:
   config-server:
     build: ./goodfood-config-server
     container_name: goodfood-config-server
-    # ports:
-    #   - "8888:8888"
+    ports:
+      - "8888:8888"
     expose:
       - "8888"
     healthcheck:
@@ -20,7 +20,7 @@ services:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 
+      MYSQL_ROOT_PASSWORD: root123
     # ports:
     #   - "3306:3306"
     healthcheck:
@@ -31,20 +31,20 @@ services:
     networks:
       - goodfood-net
 
-  mysql-exporter:
-    image: prom/mysqld-exporter
-    container_name: mysql-exporter
-    command:
-      - '--mysqld.address=mysql:3306'
-      - '--config.my-cnf=/.my.cnf'
-    volumes:
-      - ./monitoring/.my.cnf:/.my.cnf
-    expose:
-      - "9104"
-    depends_on:
-      - mysql
-    networks:
-      - goodfood-net
+  # mysql-exporter:
+  #   image: prom/mysqld-exporter
+  #   container_name: mysql-exporter
+  #   command:
+  #     - '--mysqld.address=mysql:3306'
+  #     - '--config.my-cnf=/.my.cnf'
+  #   volumes:
+  #     - ./monitoring/.my.cnf:/.my.cnf
+  #   expose:
+  #     - "9104"
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #     - goodfood-net
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -77,8 +77,8 @@ services:
     container_name: goodfood-auth-server
     # ports:
     #   - "9000:9000"
-    expose:
-      - "9000"
+    # expose:
+    #   - "9000"
     depends_on:
       config-server:
         condition: service_healthy
@@ -87,7 +87,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      DB_PASSWORD: 
+      DB_PASSWORD: root123
     networks:
       - goodfood-net
 
@@ -110,8 +110,7 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      DB_PASSWORD: 
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888" 
     networks:
       - goodfood-net
 
@@ -120,8 +119,8 @@ services:
     container_name: goodfood-order-service
     # ports:
     #   - "8082:8082"
-    expose:
-      - "8082"
+    # expose:
+    #   - "8082"
     depends_on:
       - mysql
       - kafka
@@ -130,37 +129,36 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      DB_PASSWORD: 
+      DB_PASSWORD: root123
     networks:
       - goodfood-net
   
-  payment-service:
-    build: ./goodfood-payment-service
-    container_name: goodfood-payment-service
-    # ports:
-    #   - "8086:8086"
-    expose:
-      - "8086"
-    depends_on:
-      - mysql
-      - kafka
-      - config-server
-      - auth-server
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      DB_PASSWORD: 
-    networks:
-      - goodfood-net
-
+  # payment-service:
+  #   build: ./goodfood-payment-service
+  #   container_name: goodfood-payment-service
+  #   # ports:
+  #   #   - "8086:8086"
+  #   expose:
+  #     - "8086"
+  #   depends_on:
+  #     - mysql
+  #     - kafka
+  #     - config-server
+  #     - auth-server
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #     SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+  #     DB_PASSWORD: 
+  #   networks:
+  #     - goodfood-net
 
   restaurant-service:
     build: ./goodfood-restaurant-service
     container_name: goodfood-restaurant-service
     # ports:
     #   - "8084:8084"
-    expose:
-      - "8084"
+    # expose:
+    #   - "8084"
     depends_on:
       - mysql
       - kafka
@@ -169,51 +167,72 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      DB_PASSWORD: 
+      DB_PASSWORD: root123
     networks:
       - goodfood-net
 
-  delivery-service:
-    build: ./goodfood-delivery-service
-    container_name: goodfood-delivery-service
+  # delivery-service:
+  #   build: ./goodfood-delivery-service
+  #   container_name: goodfood-delivery-service
+  #   # ports:
+  #   #   - "8085:8085"
+  #   expose:
+  #     - "8085"
+  #   depends_on:
+  #     - mysql
+  #     - kafka
+  #     - config-server
+  #     - auth-server
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #     SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+  #     DB_PASSWORD: 
+  #   networks:
+  #     - goodfood-net
+
+  notification-service:
+    build: ./goodfood-notification-service
+    container_name: goodfood-notification-service
     # ports:
-    #   - "8085:8085"
-    expose:
-      - "8085"
+    #   - "8083:8083"
+    # expose:
+    #   - "8083"
     depends_on:
       - mysql
       - kafka
       - config-server
-      - auth-server
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      DB_PASSWORD: 
+      DB_PASSWORD: root123
+      SENDER_EMAIL: yoursfutureguide@gmail.com
+      SENDER_PASSWORD: jwkumdqjyyyscoqu
     networks:
       - goodfood-net
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    depends_on:
-      - auth-server
-      - gateway
-    networks:
-      - goodfood-net
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
-    networks:
-      - goodfood-net
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
+  #   depends_on:
+  #     - auth-server
+  #     - gateway
+  #   networks:
+  #     - goodfood-net
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - goodfood-net
 
 networks:
   goodfood-net:

@@ -37,7 +37,7 @@ public class NotificationProcessor {
                         return;
                 }
                 
-                NotificationLog log = NotificationLog.builder()
+                NotificationLog logEntry = NotificationLog.builder()
                 .orderId(event.getOrderId())
                 .eventType(event.getEventType())
                 .email(event.getEmail())
@@ -45,7 +45,7 @@ public class NotificationProcessor {
                 .retryCount(0)
                 .build();
 
-                notificationLogRepository.save(log);
+                notificationLogRepository.save(logEntry);
 
                 OutboxEvent outbox = OutboxEvent.builder()
                         .aggregateType("NOTIFICATION")
@@ -56,102 +56,11 @@ public class NotificationProcessor {
 
                 outboxEventRepository.save(outbox);
 
-                log.setStatus(NotificationStatus.SUCCESS);
-                notificationLogRepository.save(log);
+
+                logEntry.setStatus(NotificationStatus.SUCCESS);
+                notificationLogRepository.save(logEntry);
         }catch (Exception ex) {
                 throw new RuntimeException("Notification processing failed", ex);
         }
     }
-
-
-
-
-//      @Value("${notification.processing-timeout-minutes:5}")
-//      private long processingTimeoutMinutes;
-    
-//     private boolean isProcessingTimedOut(NotificationLog log) {
-
-//         return log.getUpdatedAt()
-//                 .plusMinutes(processingTimeoutMinutes)
-//                 .isBefore(LocalDateTime.now());
-//         }
-
-//     public void process(NotificationEvent event) {
-
-//         log.info("Processing notification event: {}", event);
-
-//         NotificationLog logEntry =
-//                 notificationLogRepository
-//                         .findByOrderIdAndEventType(
-//                                 event.getOrderId(),
-//                                 event.getEventType()
-//                         )
-//                         .orElse(null);
-
-        
-//         if (logEntry != null) {
-
-//                 if (logEntry.getStatus() == NotificationStatus.SUCCESS) {
-//                         log.info("Already processed. Skipping {}", event);
-//                         return;
-//                 }
-
-//                 if (logEntry.getStatus() == NotificationStatus.PROCESSING) {
-
-//                         if (!isProcessingTimedOut(logEntry)) {
-//                                 log.info("Event currently being processed by another instance.");
-//                                 return;
-//                         }
-
-//                         log.warn("Reclaiming stuck PROCESSING event {}", event);
-//                 }
-//         }
-
-//         // ✅ Create or reuse record
-//         if (logEntry == null) {
-//                 logEntry = NotificationLog.builder()
-//                         .orderId(event.getOrderId())
-//                         .eventType(event.getEventType())
-//                         .email(event.getEmail())
-//                         .retryCount(0)
-//                         .build();
-//         }
-
-//         logEntry.setStatus(NotificationStatus.PROCESSING);
-
-//         notificationLogRepository.save(logEntry);
-
-//         try {
-
-//             // ✅ External side effect
-//             emailSender.sendEmail(
-//                     event.getEmail(),
-//                     buildSubject(event),
-//                     buildBody(event)
-//             );
-
-//             // ✅ mark success
-//             logEntry.setStatus(NotificationStatus.SUCCESS);
-//             notificationLogRepository.save(logEntry);
-
-//             log.info("Notification SUCCESS for order {}",
-//                     event.getOrderId());
-
-//         } catch (Exception ex) {
-
-//             log.error("Notification FAILED", ex);
-
-//             logEntry.setStatus(NotificationStatus.FAILED);
-//             logEntry.setRetryCount(
-//                     logEntry.getRetryCount() + 1
-//             );
-
-//             notificationLogRepository.save(logEntry);
-
-//             // IMPORTANT → trigger Kafka retry
-//             throw ex;
-//         }
-//     }
-
-
 }

@@ -1,6 +1,3 @@
 spring:
   application:
     name: goodfood-order-service
-          
-  config:
-    import: "optional:configserver:http://localhost:8888"

@@ -6,9 +6,6 @@ spring:
     url: jdbc:mysql://mysql:3306/goodfood_authdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: ${DB_PASSWORD}
-    
-  kafka:
-    bootstrap-servers: kafka:9092
 
   # zipkin:
   #   base-url: http://zipkin:9411

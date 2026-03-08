@@ -2,5 +2,3 @@ spring:
   application:
     name: goodfood-payment-service
           
-  config:
-    import: "optional:configserver:http://localhost:8888"
