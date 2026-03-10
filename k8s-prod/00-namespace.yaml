@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: goodfood
+  labels:
+    istio-injection: "disabled"   # set enabled if you use a service mesh

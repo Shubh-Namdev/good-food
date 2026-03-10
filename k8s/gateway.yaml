@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gateway
-  # namespace: goodfood
+  namespace: goodfood
 spec:
   replicas: 1
   selector:
@@ -22,15 +22,13 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
-          # env:
-          #   - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
-          #     value: http://auth-server.goodfood.svc.cluster.local:9000/oauth2/jwks
+    
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: gateway
-  # namespace: goodfood
+  namespace: goodfood
 spec:
   selector:
     app: gateway

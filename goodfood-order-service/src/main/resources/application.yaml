@@ -1,17 +1,6 @@
-server:
-  port: 8082
-  
 spring:
   application:
     name: goodfood-order-service
           
-  kafka:
-    bootstrap-servers: kafka:9092
-    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    producer.value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, prometheus
+  config:
+    import: "optional:configserver:http://config-server:8888"

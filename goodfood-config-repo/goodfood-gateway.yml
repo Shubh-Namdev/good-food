@@ -1,0 +1,11 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: goodfood-gateway
+
+  cloud:
+    gateway:
+      default-filters:
+        - RemoveRequestHeader=Cookie

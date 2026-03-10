@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: delivery-service
-  # namespace: goodfood
+  namespace: goodfood
 spec:
   replicas: 1
   selector:
@@ -22,23 +22,13 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: docker
-          # env:
-          #   - name: SPRING_DATASOURCE_URL
-          #     value: jdbc:mysql://mysql.goodfood.svc.cluster.local:3306/goodfood_deliverydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-          #   - name: SPRING_DATASOURCE_USERNAME
-          #     value: root
-          #   - name: SPRING_DATASOURCE_PASSWORD
-          #     value: root123
-          #   - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-          #     value: kafka.goodfood.svc.cluster.local:9092
-          #   - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
-          #     value: http://auth-server.goodfood.svc.cluster.local:9000/oauth2/jwks
+          
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: delivery-service
-  # namespace: goodfood
+  namespace: goodfood
 spec:
   selector:
     app: delivery-service

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-server
+  namespace: goodfood
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: config-server } }
+  template:
+    metadata: { labels: { app: config-server } }
+    spec:
+      serviceAccountName: app-sa
+      containers:
+        - name: config-server
+          # image: your-registry/goodfood-config-server:latest
+          image: goodfood-config-server:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8888, name: http }]
+          # env:
+          #   - { name: SPRING_PROFILES_ACTIVE, value: "k8s" }
+            # Example if using git backend:
+            # - name: SPRING_CLOUD_CONFIG_SERVER_GIT_URI
+            #   valueFrom: { secretKeyRef: { name: goodfood-secrets, key: config-server-git-uri } }
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8888 }
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8888 }
+            initialDelaySeconds: 20
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }

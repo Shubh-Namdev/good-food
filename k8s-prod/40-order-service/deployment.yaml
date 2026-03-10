@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: goodfood
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate: { maxSurge: 1, maxUnavailable: 0 }
+  selector: { matchLabels: { app: order-service } }
+  template:
+    metadata:
+      labels: { app: order-service }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "8082"
+    spec:
+      serviceAccountName: app-sa
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: order-service
+          image: goodfood-order-service:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 8082, name: http }]
+          env:
+            - { name: SPRING_PROFILES_ACTIVE, value: "docker" }
+            # - { name: SPRING_CONFIG_IMPORT, valueFrom: { configMapKeyRef: { name: goodfood-config, key: CONFIG_SERVER_URL } } }
+            # - name: SPRING_DATASOURCE_URL
+            #   value: "jdbc:mysql://$(DB_HOST):3306/goodfood_orderdb$(DB_OPTS)"
+            # - { name: DB_HOST, valueFrom: { configMapKeyRef: { name: goodfood-config, key: DB_HOST } } }
+            # - { name: DB_OPTS, valueFrom: { configMapKeyRef: { name: goodfood-config, key: DB_OPTS } } }
+            # - { name: SPRING_DATASOURCE_USERNAME, value: "root" }
+            # - name: SPRING_DATASOURCE_PASSWORD
+            #   valueFrom: { secretKeyRef: { name: goodfood-secrets, key: mysql-root-password } }
+            # - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            #   valueFrom: { configMapKeyRef: { name: goodfood-config, key: KAFKA_BOOTSTRAP } }
+            # - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI
+            #   valueFrom: { configMapKeyRef: { name: goodfood-config, key: AUTH_JWKS_URL } }
+            # - { name: JAVA_TOOL_OPTIONS, value: "-XX:MaxRAMPercentage=75 -XX:+UseG1GC -Dsun.net.inetaddr.ttl=30" }
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8082 }
+            initialDelaySeconds: 12
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8082 }
+            initialDelaySeconds: 25
+            periodSeconds: 20
+          resources:
+            requests: { cpu: "200m", memory: "256Mi" }
+            limits:   { cpu: "1",    memory: "1Gi" }
+          securityContext:
+            runAsNonRoot: false
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
