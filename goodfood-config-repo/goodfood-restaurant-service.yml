@@ -7,7 +7,6 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
 
   jpa:
     hibernate:
@@ -18,4 +17,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true   # useful for Kubernetes liveness/readiness
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      service-type: restaurant
+  tracing:
+    sampling:
+      probability: 1.0
