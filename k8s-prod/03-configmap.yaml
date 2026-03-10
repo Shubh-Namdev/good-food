@@ -4,7 +4,7 @@ metadata:
   name: goodfood-config
   namespace: goodfood
 data:
-  CONFIG_SERVER_URL: "http://config-server.goodfood:8888"
+  CONFIG_SERVER_URL: "optional:configserver:http://config-server.goodfood:8888"
   AUTH_JWKS_URL: "http://auth-server.goodfood:9000/oauth2/jwks"
   KAFKA_BOOTSTRAP: "kafka.goodfood:9092"
   DB_HOST: "mysql.goodfood"

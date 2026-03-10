@@ -4,6 +4,7 @@ metadata:
   name: kafka
   namespace: goodfood
 spec:
+  clusterIP: None 
   selector: { app: kafka }
   ports:
     - { name: broker,     port: 9092, targetPort: 9092 }
