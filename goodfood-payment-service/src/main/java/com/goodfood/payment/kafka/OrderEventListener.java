@@ -20,7 +20,7 @@ public class OrderEventListener {
     private final PaymentRepository paymentRepository;
     private final PaymentProcessor paymentProcessor;
 
-    @KafkaListener(topics = "order-events", groupId = "order-service-group")
+    @KafkaListener(topics = "order-events", groupId = "payment-service-group")
     public void handleOrderEvent(OrderCreatedEvent event) {
 
         String eventType = event.getEventType();
