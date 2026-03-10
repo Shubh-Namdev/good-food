@@ -11,6 +11,8 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import com.goodfood.restaurant.events.OrderCreatedEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,22 +24,22 @@ public class KafkaConsumerConfigOrder {
     private String bootstrapServer;
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
+    public ConsumerFactory<String, OrderCreatedEvent> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "restaurant-service-group-order");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         
-        JsonDeserializer<Object> deserializer = new JsonDeserializer<>(Object.class);
+        JsonDeserializer<OrderCreatedEvent> deserializer = new JsonDeserializer<>(OrderCreatedEvent.class);
         deserializer.addTrustedPackages("*");
         
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;

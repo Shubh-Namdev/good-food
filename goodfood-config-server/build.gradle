@@ -6,8 +6,13 @@ plugins {
 
 group = 'com.goodfood'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '21'
 description = 'centralize configuration server'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()

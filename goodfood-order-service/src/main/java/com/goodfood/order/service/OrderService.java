@@ -2,6 +2,7 @@ package com.goodfood.order.service;
 
 import com.goodfood.order.dto.OrderRequest;
 import com.goodfood.order.entity.*;
+import com.goodfood.order.events.OrderCreatedEvent;
 import com.goodfood.order.kafka.OrderEventProducer;
 import com.goodfood.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,11 +49,18 @@ public class OrderService {
         Order saved = orderRepository.save(order);
 
         // Publish to Kafka
-        HashMap<String, Object> event = new HashMap<>();
-        event.put("eventType", OrderStatus.CREATED);
-        event.put("orderId", saved.getId());
-        event.put("restaurantId", saved.getRestaurantId());
-        event.put("customerId", saved.getCustomerId());
+        // HashMap<String, Object> event = new HashMap<>();
+        // event.put("eventType", OrderStatus.CREATED);
+        // event.put("orderId", saved.getId());
+        // event.put("restaurantId", saved.getRestaurantId());
+        // event.put("customerId", saved.getCustomerId());
+        // eventProducer.sendOrderEvent(event);
+
+        OrderCreatedEvent event = new OrderCreatedEvent();
+        event.setEventType(OrderStatus.CREATED.toString());
+        event.setOrderId(saved.getId());
+        event.setRestaurantId(saved.getRestaurantId());
+        event.setCustomerId(saved.getCustomerId());
         eventProducer.sendOrderEvent(event);
 
         return saved;
