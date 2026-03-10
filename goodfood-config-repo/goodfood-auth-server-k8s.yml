@@ -1,9 +1,11 @@
 spring:
   application:
     name: goodfood-auth-server
+
   datasource:
     url: jdbc:mysql://mysql.goodfood.svc.cluster.local:3306/goodfood_authdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: ${DB_PASSWORD}
+    
   kafka:
     bootstrap-servers: kafka.goodfood.svc.cluster.local:9092
