@@ -6,8 +6,8 @@ spring:
 
   kafka:
     bootstrap-servers: ${BOOTSTRAP_SERVER_IP}:9092
-    producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    producer.value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    # producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    # producer.value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   security:
     oauth2:

@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://mysql:3306/goodfood_restaurantdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/goodfood_deliverydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: ${DB_PASSWORD}
+    password: roo123
 
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
     producer.key-serializer: org.apache.kafka.common.serialization.StringSerializer
     producer.value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
@@ -13,7 +13,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://auth-server:9000/oauth2/jwks
-
-  # zipkin:
-  #   base-url: http://zipkin:9411
+          jwk-set-uri: http://localhost:9000/oauth2/jwks

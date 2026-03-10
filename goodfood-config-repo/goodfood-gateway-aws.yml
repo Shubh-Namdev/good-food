@@ -14,10 +14,10 @@ spring:
           uri: http://${RESTAURANT_SERVICE_IP}:8084
           predicates:
             - Path=/restaurants/**
-        - id: delivery-service
-          uri: http://${DELIVERY_SERVICE_IP}:8085
-          predicates:
-            - Path=/deliveries/**
+        # - id: delivery-service
+        #   uri: http://${DELIVERY_SERVICE_IP}:8085
+        #   predicates:
+        #     - Path=/deliveries/**
 
   security:
     oauth2:

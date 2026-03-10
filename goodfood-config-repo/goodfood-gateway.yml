@@ -23,7 +23,7 @@ management:
     tags:
       application: ${spring.application.name}
       service-type: gateway
-  tracing:
-    sampling:
-      probability: 1.0
+  # tracing:
+  #   sampling:
+  #     probability: 1.0
 
