@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: goodfood-auth-server
-
-  cloud:
-    config:
-      # uri: http://config-server.goodfood:8888
-      uri: http://config-server:8888
-      fail-fast: true

@@ -18,6 +18,11 @@ spring:
           uri: http://delivery-service:8085
           predicates:
             - Path=/deliveries/**
+        - id: payment-service
+          uri: http://payment-service:8086
+          predicates:
+            - Path=/payments/**
+
 
   security:
     oauth2:
