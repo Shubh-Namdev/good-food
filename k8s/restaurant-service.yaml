@@ -21,7 +21,9 @@ spec:
             - containerPort: 8084
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: docker
+              value: k8s
+            - name: DB_PASSWORD
+              value:
           
 ---
 apiVersion: v1

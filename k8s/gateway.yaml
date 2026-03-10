@@ -21,7 +21,7 @@ spec:
             - containerPort: 8090
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: docker
+              value: k8s
     
 ---
 apiVersion: v1
