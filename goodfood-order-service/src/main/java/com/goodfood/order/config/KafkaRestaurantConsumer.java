@@ -1,4 +1,4 @@
-package com.goodfood.delivery.config;
+package com.goodfood.order.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -16,15 +16,15 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaRestaurantConsumerConfig {
+public class KafkaRestaurantConsumer {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
- 
+
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
+    public ConsumerFactory<String, Object> restaurantConsumerFactory() {
         JsonDeserializer<Object> deserializer = new JsonDeserializer<>(Object.class);
-        deserializer.addTrustedPackages("*");
+        deserializer.addTrustedPackages("*"); // trust all packages
 
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
@@ -34,9 +34,10 @@ public class KafkaRestaurantConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+    public ConcurrentKafkaListenerContainerFactory<String, Object> restaurantKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(restaurantConsumerFactory());
         return factory;
     }
 }

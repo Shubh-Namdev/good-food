@@ -1,32 +1,33 @@
 package com.goodfood.order.kafka;
 
-import com.goodfood.order.entity.Order;
-import com.goodfood.order.entity.OrderStatus;
-import com.goodfood.order.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Optional;
+import com.goodfood.order.entity.Order;
+import com.goodfood.order.entity.OrderStatus;
+import com.goodfood.order.events.PaymentEvent;
+import com.goodfood.order.repository.OrderRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class DeliveryEventConsumer {
-
+public class PaymentEventListener {
     private final OrderRepository orderRepository;
 
     @KafkaListener(
-            topics = "delivery-events",
-            groupId = "order-service-group-delivery",
-            containerFactory = "deliveryKafkaListenerContainerFactory"
+            topics = "payment-events",
+            groupId = "payment-service-group",
+            containerFactory = "paymentKafkaListenerContainerFactory"
     )
-    public void consumeDeliveryEvent(Map<String, Object> event) {
-        System.out.println("📦 Received delivery event: " + event);
+    public void consumePaymentEvent(PaymentEvent event) {
+        System.out.println("📦 Received payment event: " + event);
 
-        String eventType = (String) event.get("eventType");
-        Long orderId = ((Number) event.get("orderId")).longValue();
+        String eventType = event.getEventType();
+        Long orderId = event.getOrderId();
 
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()) {
@@ -37,8 +38,8 @@ public class DeliveryEventConsumer {
         Order order = optionalOrder.get();
 
         switch (eventType) {
-            case "ORDER_PICKED_UP" -> order.setStatus(OrderStatus.OUT_FOR_DELIVERY);
-            case "ORDER_DELIVERED" -> order.setStatus(OrderStatus.COMPLETED);
+            case "PAYMENT_SUCCESS" -> order.setStatus(OrderStatus.ORDER_ACCEPTED);
+            case "PAYMENT_DECLINED" -> order.setStatus(OrderStatus.ORDER_REJECTED);
             default -> System.out.println("ℹ️ Ignoring unknown delivery event type: " + eventType);
         }
 
@@ -46,5 +47,6 @@ public class DeliveryEventConsumer {
         orderRepository.save(order);
 
         System.out.println("✅ Updated order " + orderId + " to status: " + order.getStatus());
+
     }
 }

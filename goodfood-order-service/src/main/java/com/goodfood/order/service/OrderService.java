@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +28,7 @@ public class OrderService {
         Order order = Order.builder()
                 .customerId(customerId)
                 .restaurantId(dto.getRestaurantId())
-                .status(OrderStatus.CREATED)
+                .status(OrderStatus.ORDER_CREATED)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .items(dto.getItems().stream()
@@ -48,16 +47,8 @@ public class OrderService {
         order.setTotalAmount(totalAmount);
         Order saved = orderRepository.save(order);
 
-        // Publish to Kafka
-        // HashMap<String, Object> event = new HashMap<>();
-        // event.put("eventType", OrderStatus.CREATED);
-        // event.put("orderId", saved.getId());
-        // event.put("restaurantId", saved.getRestaurantId());
-        // event.put("customerId", saved.getCustomerId());
-        // eventProducer.sendOrderEvent(event);
-
         OrderCreatedEvent event = new OrderCreatedEvent();
-        event.setEventType(OrderStatus.CREATED.toString());
+        event.setEventType(saved.getStatus().toString());
         event.setOrderId(saved.getId());
         event.setRestaurantId(saved.getRestaurantId());
         event.setCustomerId(saved.getCustomerId());

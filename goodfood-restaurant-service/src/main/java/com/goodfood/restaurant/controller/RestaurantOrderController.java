@@ -17,7 +17,7 @@ public class RestaurantOrderController {
     @PostMapping("/{orderId}/accept")
     public String acceptOrder(@PathVariable Long orderId, @RequestParam String restaurantId) {
         // You may update internal restaurant DB here too.
-        eventProducer.publishOrderStatus(orderId, restaurantId, "ORDER_ACCEPTED");
+        eventProducer.publishOrderStatus(orderId, restaurantId, "ORDER_PREPARING");
         return "Order accepted by restaurant " + restaurantId;
     }
 

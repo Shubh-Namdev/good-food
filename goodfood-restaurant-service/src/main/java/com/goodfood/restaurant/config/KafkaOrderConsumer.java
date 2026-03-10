@@ -20,17 +20,16 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaConsumerConfigOrder {
+public class KafkaOrderConsumer {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
 
     @Bean
-    public ConsumerFactory<String, OrderCreatedEvent> consumerFactory() {
+    public ConsumerFactory<String, OrderCreatedEvent> orderConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        // props.put(ConsumerConfig.GROUP_ID_CONFIG, "restaurant-service-group-order");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,ErrorHandlingDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS,JsonDeserializer.class);
@@ -43,10 +42,10 @@ public class KafkaConsumerConfigOrder {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> orderKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(orderConsumerFactory());
         return factory;
     }
 }
