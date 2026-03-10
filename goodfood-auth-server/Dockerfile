@@ -1,13 +1,8 @@
+# Use a lightweight JDK 21 image
 FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-COPY build.gradle settings.gradle ./
+COPY build/libs/goodfood-auth-server-0.0.1-SNAPSHOT.jar app.jar
 
-COPY src ./src
-
-RUN ./gradlew bootJar --no-daemon
-
-EXPOSE 9000
-
-ENTRYPOINT ["java","-jar","build/libs/goodfood-auth-server-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

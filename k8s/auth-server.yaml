@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-server
+  namespace: goodfood
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-server
+  template:
+    metadata:
+      labels:
+        app: auth-server
+    spec:
+      containers:
+        - name: auth-server
+          image: goodfood-auth-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+          # env:
+          #   - name: SPRING_DATASOURCE_URL
+          #     value: jdbc:mysql://mysql.goodfood.svc.cluster.local:3306/goodfood_authdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+          #   - name: SPRING_DATASOURCE_USERNAME
+          #     value: root
+          #   - name: SPRING_DATASOURCE_PASSWORD
+          #     value: root123
+          #   - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          #     value: kafka.goodfood.svc.cluster.local:9092
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-server
+  namespace: goodfood
+spec:
+  selector:
+    app: auth-server
+  ports:
+    - port: 9000
+      targetPort: 9000
+  type: ClusterIP
