@@ -27,7 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://${AUTH_SERVER_URL}:9000/oauth2/jwks
+          jwk-set-uri: http://auth-server.goodfood.svc.cluster.local:9000/oauth2/jwks
 
   # zipkin:
   #   base-url: http://zipkin.goodfood.svc.cluster.local:9411

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payment-service-policy
+  namespace: goodfood
+spec:
+  podSelector: { matchLabels: { app: payment-service } }
+  policyTypes: ["Ingress","Egress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: gateway } }
+        - podSelector: { matchLabels: { app: order-service } }
+      ports:
+        - { protocol: TCP, port: 8086 }
+  egress:
+    - to:
+        - podSelector: { matchLabels: { app: mysql } }
+        - podSelector: { matchLabels: { app: kafka } }
+        - podSelector: { matchLabels: { app: auth-server } }
+      ports:
+        - { protocol: TCP, port: 3306 }
+        - { protocol: TCP, port: 9092 }
+        - { protocol: TCP, port: 9000 }

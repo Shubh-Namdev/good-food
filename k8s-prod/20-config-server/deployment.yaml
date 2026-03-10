@@ -16,11 +16,6 @@ spec:
           image: goodfood-config-server:latest
           imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8888, name: http }]
-          # env:
-          #   - { name: SPRING_PROFILES_ACTIVE, value: "k8s" }
-            # Example if using git backend:
-            # - name: SPRING_CLOUD_CONFIG_SERVER_GIT_URI
-            #   valueFrom: { secretKeyRef: { name: goodfood-secrets, key: config-server-git-uri } }
           readinessProbe:
             httpGet: { path: /actuator/health/readiness, port: 8888 }
             initialDelaySeconds: 10
